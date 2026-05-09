@@ -1,4 +1,4 @@
-import { doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc, deleteDoc, serverTimestamp, query, where } from 'firebase/firestore'
+import { doc, getDoc, collection, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp, query, where } from 'firebase/firestore'
 import { db } from './firebase'
 
 // ── Tenant helpers ────────────────────────────────────────────────────────────
@@ -18,6 +18,10 @@ export interface NegocioDoc {
   subcategoria:         string
   mensualidad:          number
   onboardingCompletado: boolean
+}
+
+export async function guardarNegocio(tenantId: string, data: Partial<NegocioDoc>): Promise<void> {
+  await setDoc(doc(db, 'tenants', tenantId, 'config', 'negocio'), data, { merge: true })
 }
 
 export async function getNegocio(tenantId: string): Promise<NegocioDoc & { abierto: boolean }> {
@@ -97,17 +101,27 @@ export async function deleteAlumno(tenantId: string, id: string): Promise<void> 
   await deleteDoc(doc(db, 'tenants', tenantId, 'alumnos', id))
 }
 
+// Aliases usados en páginas del panel
+export const guardarAlumno = setAlumno
+
+export function suscribirAlumnos(tenantId: string, cb: (alumnos: AlumnoDoc[]) => void): () => void {
+  return onSnapshot(tenantCol(tenantId, 'alumnos'), snap => {
+    cb(snap.docs.map(d => ({ id: d.id, ...d.data() } as AlumnoDoc)))
+  })
+}
+
 // ── Pagos ─────────────────────────────────────────────────────────────────────
 export interface PagoDoc {
-  id:         string
-  alumnoId:   string
+  id:           string
+  alumnoId:     string
   alumnoNombre: string
-  monto:      number
-  mes:        string  // 'YYYY-MM'
-  fecha:      string
-  metodo:     'efectivo' | 'transferencia' | 'tarjeta'
-  notas:      string
-  creado:     any
+  monto:        number
+  plan:         string
+  mes:          string  // 'YYYY-MM'
+  fecha:        string
+  metodo:       'efectivo' | 'transferencia' | 'tarjeta'
+  notas:        string
+  creado:       any
 }
 
 export async function getPagos(tenantId: string, mes?: string): Promise<PagoDoc[]> {
