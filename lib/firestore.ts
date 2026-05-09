@@ -88,7 +88,7 @@ export async function getAlumnos(tenantId: string): Promise<AlumnoDoc[]> {
   return snap.docs.map(d => ({ id: d.id, ...d.data() } as AlumnoDoc))
 }
 
-export async function setAlumno(tenantId: string, alumno: Omit<AlumnoDoc, 'id'>, id?: string): Promise<string> {
+export async function setAlumno(tenantId: string, alumno: Omit<AlumnoDoc, 'id' | 'creado'>, id?: string): Promise<string> {
   if (id) {
     await setDoc(doc(db, 'tenants', tenantId, 'alumnos', id), alumno, { merge: true })
     return id
