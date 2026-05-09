@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "flowstudioya"
+  },
+  "targets": {
+    "flowstudioya": {
+      "hosting": {
+        "flowpass": ["flowpass"]
+      }
+    }
+  }
+}

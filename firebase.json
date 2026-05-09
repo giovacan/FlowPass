@@ -1,0 +1,32 @@
+{
+  "hosting": {
+    "site": "flowpass",
+    "public": "out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**"],
+    "rewrites": [
+      { "source": "/panel/alumnos",    "destination": "/panel/alumnos.html" },
+      { "source": "/panel/pagos",      "destination": "/panel/pagos.html" },
+      { "source": "/panel/asistencia", "destination": "/panel/asistencia.html" },
+      { "source": "/panel/ajustes",    "destination": "/panel/ajustes.html" },
+      { "source": "/panel/funciones",  "destination": "/panel/funciones.html" },
+      { "source": "/panel",            "destination": "/panel.html" },
+      { "source": "/onboarding",       "destination": "/onboarding.html" },
+      { "source": "/login",            "destination": "/login.html" },
+      { "source": "/",                 "destination": "/index.html" }
+    ],
+    "headers": [
+      {
+        "source": "/**",
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
+      },
+      {
+        "source": "/_next/static/**",
+        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}
