@@ -11,7 +11,7 @@ export default function AjustesPage() {
 
   useEffect(() => {
     if (!tenantId) return
-    getNegocio(tenantId).then(n => setForm({ nombre: n.nombre, telefono: n.telefono, direccion: n.direccion }))
+    getNegocio(tenantId).then(n => setForm({ nombre: n.nombre, telefono: n.telefono, direccion: n.direccion ?? '' }))
   }, [tenantId])
 
   if (!ready) return null
