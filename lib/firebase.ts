@@ -8,10 +8,11 @@ const firebaseConfig = {
   projectId:         'flowstudioya',
   storageBucket:     'flowstudioya.firebasestorage.app',
   messagingSenderId: '793231961557',
-  appId:             '1:793231961557:web:19f1f02f24addc886f215c',
+  appId:             '1:793231961557:web:731ce6eee2ac3dc46f215c',
 }
 
-const app            = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
-export const auth    = getAuth(app)
-export const db      = getFirestore(app)
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
+
+export const auth = getAuth(app)
+export const db   = getFirestore(app)
 export const googleProvider = new GoogleAuthProvider()
