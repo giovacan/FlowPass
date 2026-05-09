@@ -37,13 +37,14 @@ export default function PagosPage() {
     setSaving(true)
     const alumno = alumnos.find(a => a.id === form.alumnoId)
     await registrarPago(tenantId, {
-      alumnoId: form.alumnoId,
+      alumnoId:     form.alumnoId,
       alumnoNombre: alumno ? `${alumno.nombre} ${alumno.apellido}` : '',
-      monto: form.monto,
+      monto:        form.monto,
+      plan:         form.plan,
       mes,
-      fecha: new Date().toISOString().slice(0, 10),
-      metodo: form.metodo as any,
-      notas: form.notas,
+      fecha:        new Date().toISOString().slice(0, 10),
+      metodo:       form.metodo as any,
+      notas:        form.notas,
     })
     setSaving(false)
     setModal(false)
