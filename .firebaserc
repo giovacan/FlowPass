@@ -5,7 +5,7 @@
   "targets": {
     "flowstudioya": {
       "hosting": {
-        "flowpass": ["flowpass"]
+        "flowpass-app": ["flowpass-app"]
       }
     }
   }

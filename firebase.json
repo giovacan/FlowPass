@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "flowpass",
+    "site": "flowpass-app",
     "public": "out",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**"],
     "rewrites": [
