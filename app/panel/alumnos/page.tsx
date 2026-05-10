@@ -4,16 +4,21 @@ import { useFlowPassAuth } from '@/lib/useFlowPassAuth'
 import { suscribirAlumnos, guardarAlumno, deleteAlumno, type AlumnoDoc, type Grado } from '@/lib/firestore'
 
 const GRADOS: Grado[] = ['blanco', 'azul', 'morado', 'cafe', 'negro']
-const GRADO_COLOR: Record<string, string> = {
-  blanco: '#F5EFD9', azul: '#1F5E9E', morado: '#5E2E8C', cafe: '#5C3A1F', negro: '#0B0908',
+
+const ESTADO_BADGE: Record<string, string> = {
+  al_corriente: 'fp-badge fp-badge-green',
+  por_vencer:   'fp-badge fp-badge-yellow',
+  vencido:      'fp-badge fp-badge-red',
 }
-const ESTADO_COLOR: Record<string, string> = {
-  al_corriente: '#3FA09A', por_vencer: '#D4A547', vencido: '#B53825',
+const ESTADO_LABEL: Record<string, string> = {
+  al_corriente: 'Al corriente',
+  por_vencer:   'Por vencer',
+  vencido:      'Vencido',
 }
 
 const EMPTY: Omit<AlumnoDoc, 'id' | 'creado'> = {
   nombre: '', apellido: '', telefono: '', email: '', fotoUrl: '',
-  grado: 'blanco', subcategoria: 'bjj', fechaInscripcion: new Date().toISOString().slice(0,10),
+  grado: 'blanco', subcategoria: 'bjj', fechaInscripcion: new Date().toISOString().slice(0, 10),
   fechaVencimiento: '', estadoPago: 'al_corriente', activo: true, notas: '',
 }
 
@@ -57,119 +62,144 @@ export default function AlumnosPage() {
     await deleteAlumno(tenantId, id)
   }
 
-  const inp: React.CSSProperties = { width: '100%', background: '#0B0908', border: '1px solid rgba(232,220,196,0.28)', color: '#E8DCC4', padding: '12px 14px', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }
-
   return (
-    <div style={{ padding: 40 }}>
+    <div className="fp-fade-in" style={{ padding: '36px 40px', maxWidth: 1100 }}>
+
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Gestión</div>
-          <h1 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 48, textTransform: 'uppercase', margin: 0 }}>Alumnos</h1>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.15em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 8 }}>Gestión</div>
+          <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 48, letterSpacing: '0.02em', color: '#fff', lineHeight: 1, margin: 0 }}>Alumnos</h1>
         </div>
-        <button onClick={abrirNuevo} style={{ appearance: 'none', background: '#B53825', border: '1px solid #B53825', color: '#E8DCC4', padding: '14px 24px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.04em' }}>
-          + Nuevo alumno
+        <button onClick={abrirNuevo} className="fp-btn fp-btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nuevo alumno
         </button>
       </div>
 
-      <input placeholder="Buscar alumno..." value={buscar} onChange={e => setBuscar(e.target.value)}
-        style={{ ...inp, maxWidth: 360, marginBottom: 24 }} />
+      {/* Search */}
+      <div style={{ marginBottom: 20 }}>
+        <input
+          className="fp-input"
+          style={{ maxWidth: 360 }}
+          placeholder="Buscar alumno..."
+          value={buscar}
+          onChange={e => setBuscar(e.target.value)}
+        />
+      </div>
 
-      <div style={{ border: '1px solid rgba(232,220,196,0.14)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      {/* Table */}
+      <div className="fp-card" style={{ overflow: 'hidden' }}>
+        <table className="fp-table">
           <thead>
-            <tr style={{ background: '#15110D' }}>
+            <tr>
               {['Alumno', 'Disciplina', 'Cinturón', 'Estado pago', 'Vence', ''].map(h => (
-                <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#574E40', fontWeight: 400, borderBottom: '1px solid rgba(232,220,196,0.14)' }}>{h}</th>
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filtrados.map((a, i) => (
-              <tr key={a.id} style={{ borderTop: i > 0 ? '1px solid rgba(232,220,196,0.07)' : 'none' }}>
-                <td style={{ padding: '14px 16px' }}>
-                  <div style={{ fontWeight: 600 }}>{a.nombre} {a.apellido}</div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#574E40', marginTop: 2 }}>{a.telefono}</div>
+            {filtrados.map(a => (
+              <tr key={a.id}>
+                <td>
+                  <div style={{ fontWeight: 600, color: '#fff' }}>{a.nombre} {a.apellido}</div>
+                  {a.telefono && <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 3 }}>{a.telefono}</div>}
                 </td>
-                <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#8A7F6A', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{a.subcategoria}</td>
-                <td style={{ padding: '14px 16px' }}>
+                <td style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10.5, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{a.subcategoria}</td>
+                <td>
                   <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ width: 16, height: 16, background: GRADO_COLOR[a.grado] || '#574E40', border: '1px solid rgba(232,220,196,0.2)', display: 'inline-block', flexShrink: 0 }} />
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#8A7F6A' }}>{a.grado}</span>
+                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: a.grado === 'blanco' ? '#e5e5e5' : a.grado === 'azul' ? '#3b82f6' : a.grado === 'morado' ? '#a855f7' : a.grado === 'cafe' ? '#92400e' : '#111', border: '1px solid rgba(255,255,255,0.15)', flexShrink: 0 }} />
+                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10.5, color: 'rgba(255,255,255,0.45)', textTransform: 'capitalize' }}>{a.grado}</span>
                   </div>
                 </td>
-                <td style={{ padding: '14px 16px' }}>
-                  <span style={{ background: ESTADO_COLOR[a.estadoPago] || '#574E40', color: '#0B0908', padding: '3px 10px', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.14em', textTransform: 'uppercase', fontWeight: 700 }}>
-                    {a.estadoPago?.replace('_', ' ')}
+                <td>
+                  <span className={ESTADO_BADGE[a.estadoPago] || 'fp-badge fp-badge-blue'}>
+                    {ESTADO_LABEL[a.estadoPago] || a.estadoPago}
                   </span>
                 </td>
-                <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: '#574E40' }}>{a.fechaVencimiento || '—'}</td>
-                <td style={{ padding: '14px 16px' }}>
+                <td style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                  {a.fechaVencimiento || '—'}
+                </td>
+                <td>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button onClick={() => abrirEditar(a)} style={{ appearance: 'none', background: 'transparent', border: '1px solid rgba(232,220,196,0.2)', color: '#8A7F6A', padding: '6px 12px', cursor: 'pointer', fontSize: 12 }}>Editar</button>
-                    <button onClick={() => eliminar(a.id)} style={{ appearance: 'none', background: 'transparent', border: '1px solid rgba(181,56,37,0.3)', color: '#B53825', padding: '6px 12px', cursor: 'pointer', fontSize: 12 }}>✕</button>
+                    <button onClick={() => abrirEditar(a)} className="fp-btn fp-btn-ghost" style={{ padding: '6px 14px', fontSize: 12 }}>Editar</button>
+                    <button onClick={() => eliminar(a.id)} className="fp-btn fp-btn-danger" style={{ padding: '6px 12px', fontSize: 12 }}>✕</button>
                   </div>
                 </td>
               </tr>
             ))}
             {filtrados.length === 0 && (
-              <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#574E40', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.14em' }}>SIN ALUMNOS</td></tr>
+              <tr>
+                <td colSpan={6} style={{ padding: '48px 0', textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '0.14em' }}>
+                  {buscar ? 'Sin resultados' : 'Sin alumnos registrados'}
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
       </div>
 
+      {/* Count */}
+      {alumnos.length > 0 && (
+        <div style={{ marginTop: 12, fontFamily: "'JetBrains Mono',monospace", fontSize: 10, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.08em' }}>
+          {filtrados.length} alumno{filtrados.length !== 1 ? 's' : ''} · {alumnos.filter(a => a.activo).length} activos
+        </div>
+      )}
+
       {/* Modal */}
       {modal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(11,9,8,0.9)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: '#15110D', border: '1px solid rgba(232,220,196,0.2)', padding: 36, width: '100%', maxWidth: 560, maxHeight: '90vh', overflowY: 'auto' }}>
-            <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 28, textTransform: 'uppercase', marginBottom: 28 }}>
+        <div className="fp-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
+          <div className="fp-modal" style={{ maxWidth: 560 }}>
+            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, letterSpacing: '0.04em', color: '#fff', margin: '0 0 28px' }}>
               {editId ? 'Editar alumno' : 'Nuevo alumno'}
-            </div>
+            </h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               {([['Nombre', 'nombre'], ['Apellido', 'apellido'], ['Teléfono', 'telefono'], ['Email', 'email']] as [string, keyof typeof form][]).map(([label, key]) => (
                 <label key={key}>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>{label}</div>
-                  <input style={inp} value={form[key] as string} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} />
+                  <span className="fp-label">{label}</span>
+                  <input className="fp-input" value={form[key] as string} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} />
                 </label>
               ))}
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Cinturón / Grado</div>
-                <select style={inp} value={form.grado} onChange={e => setForm(p => ({ ...p, grado: e.target.value as Grado }))}>
-                  {GRADOS.map(g => <option key={g} value={g}>{g}</option>)}
+                <span className="fp-label">Cinturón / Grado</span>
+                <select className="fp-input" value={form.grado} onChange={e => setForm(p => ({ ...p, grado: e.target.value as Grado }))}>
+                  {GRADOS.map(g => <option key={g} value={g} style={{ background: '#18181D' }}>{g}</option>)}
                 </select>
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Disciplina</div>
-                <select style={inp} value={form.subcategoria} onChange={e => setForm(p => ({ ...p, subcategoria: e.target.value }))}>
-                  {['bjj', 'muay-thai', 'boxeo', 'mma', 'defensa', 'kids'].map(d => <option key={d} value={d}>{d}</option>)}
+                <span className="fp-label">Disciplina</span>
+                <select className="fp-input" value={form.subcategoria} onChange={e => setForm(p => ({ ...p, subcategoria: e.target.value }))}>
+                  {['bjj', 'muay-thai', 'boxeo', 'mma', 'defensa', 'kids'].map(d => (
+                    <option key={d} value={d} style={{ background: '#18181D' }}>{d}</option>
+                  ))}
                 </select>
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Fecha inscripción</div>
-                <input style={inp} type="date" value={form.fechaInscripcion} onChange={e => setForm(p => ({ ...p, fechaInscripcion: e.target.value }))} />
+                <span className="fp-label">Fecha inscripción</span>
+                <input className="fp-input" type="date" value={form.fechaInscripcion} onChange={e => setForm(p => ({ ...p, fechaInscripcion: e.target.value }))} />
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Estado de pago</div>
-                <select style={inp} value={form.estadoPago} onChange={e => setForm(p => ({ ...p, estadoPago: e.target.value as any }))}>
-                  <option value="al_corriente">Al corriente</option>
-                  <option value="por_vencer">Por vencer</option>
-                  <option value="vencido">Vencido</option>
+                <span className="fp-label">Estado de pago</span>
+                <select className="fp-input" value={form.estadoPago} onChange={e => setForm(p => ({ ...p, estadoPago: e.target.value as any }))}>
+                  <option value="al_corriente" style={{ background: '#18181D' }}>Al corriente</option>
+                  <option value="por_vencer"   style={{ background: '#18181D' }}>Por vencer</option>
+                  <option value="vencido"       style={{ background: '#18181D' }}>Vencido</option>
                 </select>
+              </label>
+              <label>
+                <span className="fp-label">Fecha vencimiento</span>
+                <input className="fp-input" type="date" value={form.fechaVencimiento} onChange={e => setForm(p => ({ ...p, fechaVencimiento: e.target.value }))} />
               </label>
               <label style={{ gridColumn: '1 / -1' }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Notas</div>
-                <textarea style={{ ...inp, height: 72, resize: 'vertical' }} value={form.notas} onChange={e => setForm(p => ({ ...p, notas: e.target.value }))} />
+                <span className="fp-label">Notas</span>
+                <textarea className="fp-input" style={{ height: 80, resize: 'vertical' }} value={form.notas} onChange={e => setForm(p => ({ ...p, notas: e.target.value }))} />
               </label>
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
-              <button onClick={guardar} disabled={saving}
-                style={{ appearance: 'none', background: '#B53825', border: '1px solid #B53825', color: '#E8DCC4', padding: '14px 28px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer', opacity: saving ? 0.6 : 1 }}>
+            <div style={{ display: 'flex', gap: 10, marginTop: 28 }}>
+              <button onClick={guardar} disabled={saving} className="fp-btn fp-btn-primary">
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
-              <button onClick={() => setModal(false)}
-                style={{ appearance: 'none', background: 'transparent', border: '1px solid rgba(232,220,196,0.2)', color: '#8A7F6A', padding: '14px 20px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer' }}>
-                Cancelar
-              </button>
+              <button onClick={() => setModal(false)} className="fp-btn fp-btn-ghost">Cancelar</button>
             </div>
           </div>
         </div>

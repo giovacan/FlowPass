@@ -5,9 +5,15 @@ import { getAlumnos, getPagos, registrarPago, type AlumnoDoc, type PagoDoc } fro
 
 const PLANES = [
   { id: 'iniciante', label: 'Iniciante', monto: 1200 },
-  { id: 'guerrero', label: 'Guerrero', monto: 1800 },
-  { id: 'aguila', label: 'Águila', monto: 2800 },
+  { id: 'guerrero',  label: 'Guerrero',  monto: 1800 },
+  { id: 'aguila',    label: 'Águila',    monto: 2800 },
 ]
+
+const METODO_BADGE: Record<string, string> = {
+  efectivo:      'fp-badge fp-badge-green',
+  transferencia: 'fp-badge fp-badge-blue',
+  tarjeta:       'fp-badge fp-badge-yellow',
+}
 
 export default function PagosPage() {
   const { tenantId, ready } = useFlowPassAuth()
@@ -51,62 +57,73 @@ export default function PagosPage() {
     getPagos(tenantId, mes).then(setPagos)
   }
 
-  const inp: React.CSSProperties = { width: '100%', background: '#0B0908', border: '1px solid rgba(232,220,196,0.28)', color: '#E8DCC4', padding: '12px 14px', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }
-
   return (
-    <div style={{ padding: 40 }}>
+    <div className="fp-fade-in" style={{ padding: '36px 40px', maxWidth: 1100 }}>
+
+      {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Control de</div>
-          <h1 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 48, textTransform: 'uppercase', margin: 0 }}>Pagos</h1>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.15em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 8 }}>Control de</div>
+          <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 48, letterSpacing: '0.02em', color: '#fff', lineHeight: 1, margin: 0 }}>Pagos</h1>
         </div>
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
-          <input type="month" value={mes} onChange={e => setMes(e.target.value)}
-            style={{ ...inp, width: 'auto', maxWidth: 160 }} />
-          <button onClick={() => setModal(true)}
-            style={{ appearance: 'none', background: '#B53825', border: '1px solid #B53825', color: '#E8DCC4', padding: '14px 24px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer', letterSpacing: '0.04em' }}>
-            + Registrar pago
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
+          <input
+            type="month"
+            value={mes}
+            onChange={e => setMes(e.target.value)}
+            className="fp-input"
+            style={{ width: 'auto' }}
+          />
+          <button onClick={() => setModal(true)} className="fp-btn fp-btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Registrar pago
           </button>
         </div>
       </div>
 
-      {/* Resumen */}
+      {/* Stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 32 }}>
         {[
-          { label: 'Total del mes', value: `$${total.toLocaleString()} MXN`, color: '#3FA09A' },
-          { label: 'Pagos registrados', value: pagos.length, color: '#D4A547' },
-          { label: 'Promedio por pago', value: pagos.length ? `$${Math.round(total / pagos.length).toLocaleString()}` : '—', color: '#2E7D7A' },
+          { label: 'Total del mes',      value: `$${total.toLocaleString()}`,                                                                      color: '#4ade80' },
+          { label: 'Pagos registrados',  value: pagos.length,                                                                                       color: '#60a5fa' },
+          { label: 'Promedio por pago',  value: pagos.length ? `$${Math.round(total / pagos.length).toLocaleString()}` : '—',                       color: '#fbbf24' },
         ].map(c => (
-          <div key={c.label} style={{ background: '#15110D', border: '1px solid rgba(232,220,196,0.14)', padding: '20px 20px' }}>
-            <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 32, color: c.color }}>{c.value}</div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#574E40', marginTop: 6 }}>{c.label}</div>
+          <div key={c.label} className="fp-card" style={{ padding: '20px 22px' }}>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 40, color: c.color, lineHeight: 1, letterSpacing: '0.02em', marginBottom: 6 }}>{c.value}</div>
+            <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9.5, letterSpacing: '0.14em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)' }}>{c.label}</div>
           </div>
         ))}
       </div>
 
-      {/* Lista */}
-      <div style={{ border: '1px solid rgba(232,220,196,0.14)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      {/* Table */}
+      <div className="fp-card" style={{ overflow: 'hidden' }}>
+        <table className="fp-table">
           <thead>
-            <tr style={{ background: '#15110D' }}>
+            <tr>
               {['Alumno', 'Plan', 'Monto', 'Método', 'Fecha', 'Notas'].map(h => (
-                <th key={h} style={{ padding: '14px 16px', textAlign: 'left', fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#574E40', fontWeight: 400, borderBottom: '1px solid rgba(232,220,196,0.14)' }}>{h}</th>
+                <th key={h}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {pagos.map((p, i) => (
-              <tr key={p.id} style={{ borderTop: i > 0 ? '1px solid rgba(232,220,196,0.07)' : 'none' }}>
-                <td style={{ padding: '14px 16px', fontWeight: 600 }}>{p.alumnoNombre}</td>
-                <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.1em', color: '#D4A547' }}>{p.plan}</td>
-                <td style={{ padding: '14px 16px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 22, color: '#3FA09A' }}>${p.monto.toLocaleString()}</td>
-                <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, textTransform: 'uppercase', color: '#8A7F6A' }}>{p.metodo}</td>
-                <td style={{ padding: '14px 16px', fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: '#574E40' }}>{p.fecha}</td>
-                <td style={{ padding: '14px 16px', fontSize: 13, color: '#574E40' }}>{p.notas || '—'}</td>
+            {pagos.map(p => (
+              <tr key={p.id}>
+                <td style={{ fontWeight: 600, color: '#fff' }}>{p.alumnoNombre}</td>
+                <td style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10.5, color: 'rgba(255,255,255,0.45)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>{p.plan}</td>
+                <td style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 26, color: '#4ade80', letterSpacing: '0.02em', lineHeight: 1 }}>${p.monto.toLocaleString()}</td>
+                <td>
+                  <span className={METODO_BADGE[p.metodo] || 'fp-badge fp-badge-blue'}>{p.metodo}</span>
+                </td>
+                <td style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>{p.fecha}</td>
+                <td style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>{p.notas || '—'}</td>
               </tr>
             ))}
             {pagos.length === 0 && (
-              <tr><td colSpan={6} style={{ padding: 40, textAlign: 'center', color: '#574E40', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.14em' }}>SIN PAGOS EN ESTE MES</td></tr>
+              <tr>
+                <td colSpan={6} style={{ padding: '48px 0', textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '0.14em' }}>
+                  Sin pagos en este mes
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -114,52 +131,54 @@ export default function PagosPage() {
 
       {/* Modal */}
       {modal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(11,9,8,0.9)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ background: '#15110D', border: '1px solid rgba(232,220,196,0.2)', padding: 36, width: '100%', maxWidth: 480 }}>
-            <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 28, textTransform: 'uppercase', marginBottom: 28 }}>Registrar pago</div>
+        <div className="fp-modal-overlay" onClick={e => { if (e.target === e.currentTarget) setModal(false) }}>
+          <div className="fp-modal" style={{ maxWidth: 480 }}>
+            <h2 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 32, letterSpacing: '0.04em', color: '#fff', margin: '0 0 28px' }}>
+              Registrar pago
+            </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Alumno</div>
-                <select style={inp} value={form.alumnoId} onChange={e => setForm(p => ({ ...p, alumnoId: e.target.value }))}>
-                  <option value="">— Selecciona —</option>
-                  {alumnos.filter(a => a.activo).map(a => <option key={a.id} value={a.id}>{a.nombre} {a.apellido}</option>)}
+                <span className="fp-label">Alumno</span>
+                <select className="fp-input" value={form.alumnoId} onChange={e => setForm(p => ({ ...p, alumnoId: e.target.value }))}>
+                  <option value="" style={{ background: '#18181D' }}>— Selecciona —</option>
+                  {alumnos.filter(a => a.activo).map(a => (
+                    <option key={a.id} value={a.id} style={{ background: '#18181D' }}>{a.nombre} {a.apellido}</option>
+                  ))}
                 </select>
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Plan de membresía</div>
-                <select style={inp} value={form.plan} onChange={e => {
+                <span className="fp-label">Plan de membresía</span>
+                <select className="fp-input" value={form.plan} onChange={e => {
                   const plan = PLANES.find(p => p.id === e.target.value)
                   setForm(p => ({ ...p, plan: e.target.value, monto: plan?.monto ?? p.monto }))
                 }}>
-                  {PLANES.map(p => <option key={p.id} value={p.id}>{p.label} — ${p.monto.toLocaleString()}</option>)}
+                  {PLANES.map(p => (
+                    <option key={p.id} value={p.id} style={{ background: '#18181D' }}>{p.label} — ${p.monto.toLocaleString()}</option>
+                  ))}
                 </select>
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Monto (MXN)</div>
-                <input style={inp} type="number" value={form.monto} onChange={e => setForm(p => ({ ...p, monto: Number(e.target.value) }))} />
+                <span className="fp-label">Monto (MXN)</span>
+                <input className="fp-input" type="number" value={form.monto} onChange={e => setForm(p => ({ ...p, monto: Number(e.target.value) }))} />
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Método de pago</div>
-                <select style={inp} value={form.metodo} onChange={e => setForm(p => ({ ...p, metodo: e.target.value }))}>
-                  <option value="efectivo">Efectivo</option>
-                  <option value="transferencia">Transferencia</option>
-                  <option value="tarjeta">Tarjeta</option>
+                <span className="fp-label">Método de pago</span>
+                <select className="fp-input" value={form.metodo} onChange={e => setForm(p => ({ ...p, metodo: e.target.value }))}>
+                  <option value="efectivo"      style={{ background: '#18181D' }}>Efectivo</option>
+                  <option value="transferencia" style={{ background: '#18181D' }}>Transferencia</option>
+                  <option value="tarjeta"       style={{ background: '#18181D' }}>Tarjeta</option>
                 </select>
               </label>
               <label>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Notas</div>
-                <input style={inp} value={form.notas} onChange={e => setForm(p => ({ ...p, notas: e.target.value }))} placeholder="Opcional" />
+                <span className="fp-label">Notas</span>
+                <input className="fp-input" value={form.notas} onChange={e => setForm(p => ({ ...p, notas: e.target.value }))} placeholder="Opcional" />
               </label>
             </div>
-            <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
-              <button onClick={guardar} disabled={saving || !form.alumnoId}
-                style={{ appearance: 'none', background: '#B53825', border: '1px solid #B53825', color: '#E8DCC4', padding: '14px 28px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer', opacity: (!form.alumnoId || saving) ? 0.5 : 1 }}>
+            <div style={{ display: 'flex', gap: 10, marginTop: 28 }}>
+              <button onClick={guardar} disabled={saving || !form.alumnoId} className="fp-btn fp-btn-primary">
                 {saving ? 'Guardando...' : 'Registrar'}
               </button>
-              <button onClick={() => setModal(false)}
-                style={{ appearance: 'none', background: 'transparent', border: '1px solid rgba(232,220,196,0.2)', color: '#8A7F6A', padding: '14px 20px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 18, textTransform: 'uppercase', cursor: 'pointer' }}>
-                Cancelar
-              </button>
+              <button onClick={() => setModal(false)} className="fp-btn fp-btn-ghost">Cancelar</button>
             </div>
           </div>
         </div>

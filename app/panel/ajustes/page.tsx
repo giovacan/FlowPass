@@ -22,48 +22,79 @@ export default function AjustesPage() {
     await guardarNegocio(tenantId, form)
     setSaving(false)
     setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    setTimeout(() => setSaved(false), 2500)
   }
 
-  const inp: React.CSSProperties = { width: '100%', background: '#0B0908', border: '1px solid rgba(232,220,196,0.28)', color: '#E8DCC4', padding: '14px 16px', fontSize: 15, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box' }
-
   return (
-    <div style={{ padding: 40 }}>
-      <div style={{ marginBottom: 40 }}>
-        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 6 }}>Configuración</div>
-        <h1 style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 48, textTransform: 'uppercase', margin: 0 }}>Ajustes</h1>
+    <div className="fp-fade-in" style={{ padding: '36px 40px', maxWidth: 1100 }}>
+
+      {/* Header */}
+      <div style={{ marginBottom: 36 }}>
+        <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10, letterSpacing: '0.15em', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: 8 }}>Configuración</div>
+        <h1 style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 48, letterSpacing: '0.02em', color: '#fff', lineHeight: 1, margin: 0 }}>Ajustes</h1>
       </div>
 
-      <div style={{ maxWidth: 560 }}>
-        <div style={{ background: '#15110D', border: '1px solid rgba(232,220,196,0.14)', padding: 36, marginBottom: 24 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.2em', color: '#D4A547', textTransform: 'uppercase', marginBottom: 24 }}>
+      <div style={{ maxWidth: 560, display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+        {/* Datos del negocio */}
+        <div className="fp-card" style={{ padding: '28px 28px' }}>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9.5, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', marginBottom: 24 }}>
             Datos del negocio
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             {([
-              ['Nombre de la academia', 'nombre', 'text'],
-              ['Teléfono / WhatsApp', 'telefono', 'tel'],
-              ['Dirección', 'direccion', 'text'],
+              ['Nombre de la academia', 'nombre',    'text'],
+              ['Teléfono / WhatsApp',   'telefono',  'tel'],
+              ['Dirección',             'direccion', 'text'],
             ] as [string, keyof typeof form, string][]).map(([label, key, type]) => (
               <label key={key}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 8 }}>{label}</div>
-                <input style={inp} type={type} value={form[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} />
+                <span className="fp-label">{label}</span>
+                <input
+                  className="fp-input"
+                  type={type}
+                  value={form[key]}
+                  onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))}
+                />
               </label>
             ))}
           </div>
-          <button onClick={guardar} disabled={saving}
-            style={{ appearance: 'none', marginTop: 28, background: '#B53825', border: '1px solid #B53825', color: '#E8DCC4', padding: '16px 32px', fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 800, fontSize: 20, textTransform: 'uppercase', cursor: 'pointer', opacity: saving ? 0.6 : 1, letterSpacing: '0.04em' }}>
-            {saved ? '✓ Guardado' : saving ? 'Guardando...' : 'Guardar cambios'}
-          </button>
+          <div style={{ marginTop: 24, display: 'flex', alignItems: 'center', gap: 14 }}>
+            <button onClick={guardar} disabled={saving} className="fp-btn fp-btn-primary">
+              {saving ? 'Guardando...' : 'Guardar cambios'}
+            </button>
+            {saved && (
+              <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 10.5, color: '#4ade80', letterSpacing: '0.08em' }}>
+                ✓ Guardado
+              </span>
+            )}
+          </div>
         </div>
 
-        <div style={{ background: '#15110D', border: '1px solid rgba(232,220,196,0.14)', padding: 36 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: '0.2em', color: '#574E40', textTransform: 'uppercase', marginBottom: 16 }}>Plan actual</div>
-          <div style={{ fontFamily: "'Big Shoulders Display', sans-serif", fontWeight: 900, fontSize: 36, color: '#D4A547', textTransform: 'uppercase' }}>Basic</div>
-          <p style={{ color: '#574E40', fontSize: 14, lineHeight: 1.6, marginTop: 12, marginBottom: 0 }}>
+        {/* Plan */}
+        <div className="fp-card" style={{ padding: '28px 28px' }}>
+          <div style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9.5, letterSpacing: '0.14em', color: 'rgba(255,255,255,0.28)', textTransform: 'uppercase', marginBottom: 18 }}>
+            Plan actual
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 16 }}>
+            <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 38, color: '#fbbf24', letterSpacing: '0.04em', lineHeight: 1 }}>Basic</div>
+            <span className="fp-badge fp-badge-yellow">Activo</span>
+          </div>
+          <p style={{ fontSize: 13.5, color: 'rgba(255,255,255,0.4)', lineHeight: 1.65, margin: 0 }}>
             Alumnos, pagos y asistencia incluidos. Actualiza a Pro en FlowStudio para desbloquear grados, reportes y acceso QR.
           </p>
+          <div style={{ marginTop: 20 }}>
+            <a
+              href="https://flowstudioya.web.app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="fp-btn fp-btn-ghost"
+              style={{ textDecoration: 'none', display: 'inline-flex' }}
+            >
+              Ver planes →
+            </a>
+          </div>
         </div>
+
       </div>
     </div>
   )
