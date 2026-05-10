@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
 import { resolveTenant, getNegocio } from '@/lib/firestore'
+import { type PlanId, type FeatureOverrides, type PaymentStatus, cuentaSuspendida } from '@/lib/plans'
 
 export interface FlowPassAuthState {
   tenantId:      string
@@ -12,14 +13,23 @@ export interface FlowPassAuthState {
   negocioNombre: string
   subcategoria:  string
   userName:      string
-  plan:          'basic' | 'pro'
+  plan:          PlanId
+  extraUsuarios: number
+  extraSedes:    number
+  overrides:     FeatureOverrides
+  paymentStatus: PaymentStatus
+  trialEndsAt:   string | null
+  suspendido:    boolean
   ready:         boolean
   redirectTo:    string
 }
 
 const INITIAL: FlowPassAuthState = {
   tenantId: '', uid: '', rol: '', negocioNombre: '',
-  subcategoria: '', userName: '', plan: 'basic', ready: false, redirectTo: '',
+  subcategoria: '', userName: '', plan: 'negocio',
+  extraUsuarios: 0, extraSedes: 0, overrides: {},
+  paymentStatus: 'trial', trialEndsAt: null, suspendido: false,
+  ready: false, redirectTo: '',
 }
 
 export function useFlowPassAuth(): FlowPassAuthState {
@@ -52,7 +62,14 @@ export function useFlowPassAuth(): FlowPassAuthState {
           getNegocio(tenantId).catch(() => ({ nombre: '', abierto: true, subcategoria: '' })),
         ])
 
-        const plan: 'basic' | 'pro' = studioSnap?.data()?.plan === 'pro' ? 'pro' : 'basic'
+        const studioData                   = studioSnap?.data() || {}
+        const plan: PlanId                 = (['personal','negocio','cadena','elite'].includes(studioData.plan) ? studioData.plan : 'negocio') as PlanId
+        const extraUsuarios                = studioData.extraUsuarios  ?? 0
+        const extraSedes                   = studioData.extraSedes     ?? 0
+        const overrides: FeatureOverrides  = studioData.featureOverrides ?? {}
+        const paymentStatus: PaymentStatus = studioData.paymentStatus   ?? 'trial'
+        const trialEndsAt: string | null   = studioData.trialEndsAt     ?? null
+        const suspendido                   = cuentaSuspendida(paymentStatus, trialEndsAt)
 
         if ((negocio as any).onboardingCompletado === false) {
           setState(s => ({ ...s, redirectTo: '/onboarding' }))
@@ -67,8 +84,14 @@ export function useFlowPassAuth(): FlowPassAuthState {
           subcategoria:  (negocio as any).subcategoria || '',
           userName:      displayName,
           plan,
+          extraUsuarios,
+          extraSedes,
+          overrides,
+          paymentStatus,
+          trialEndsAt,
+          suspendido,
           ready:         true,
-          redirectTo:    '',
+          redirectTo:    suspendido ? '/suspendido' : '',
         })
       } catch {
         const cached = localStorage.getItem('fp_tenant')
@@ -80,7 +103,13 @@ export function useFlowPassAuth(): FlowPassAuthState {
             negocioNombre: '',
             subcategoria:  '',
             userName:      user.displayName?.split(' ')[0] || '',
-            plan:          'basic',
+            plan:          'negocio',
+            extraUsuarios: 0,
+            extraSedes:    0,
+            overrides:     {},
+            paymentStatus: 'trial',
+            trialEndsAt:   null,
+            suspendido:    false,
             ready:         true,
             redirectTo:    '',
           })
