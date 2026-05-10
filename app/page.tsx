@@ -147,27 +147,30 @@ const PILLARS = [
     num: '01', label: 'Cobranza', title: 'Cobranza recurrente.',
     body: 'Suscripciones automatizadas, débito recurrente, MercadoPago y transferencia. Recordatorios, reintentos y dunning automático para que no chases a nadie.',
     stats: [{ k: 'PASARELAS', v: '+14' }, { k: 'SETUP', v: '4 min' }, { k: 'COMISIÓN', v: '0%' }],
-    img: 'SCREENSHOT · PANEL DE COBRANZA',
+    img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80&fit=crop',
+    imgAlt: 'Dashboard de cobranza y pagos',
   },
   {
     num: '02', label: 'Asistencia', title: 'Asistencia en tatami.',
     body: 'Check-in con QR, NFC o lector facial. La lista de la clase aparece en tiempo real en el tablet del instructor — sin red, sin fricción.',
     stats: [{ k: 'INPUT', v: 'QR · NFC · Face' }, { k: 'OFFLINE', v: 'Sí' }],
-    img: 'FOTO · CHECK-IN QR EN CLASE',
+    img: 'https://images.unsplash.com/photo-1593079831268-3381b0db4a77?w=1200&q=80&fit=crop',
+    imgAlt: 'Check-in QR en clase de artes marciales',
   },
   {
     num: '03', label: 'Agenda', title: 'Agenda con cupos.',
     body: 'Reservas con lista de espera, créditos por plan, bloqueos por instructor. Tu app blanca para socios — App Store y Play, con tu marca.',
     stats: [{ k: 'APP', v: 'White-label' }, { k: 'WAITLIST', v: 'Auto' }],
-    img: 'SCREENSHOT · AGENDA CON CUPOS',
+    img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=1200&q=80&fit=crop',
+    imgAlt: 'Agenda y calendario de clases',
   },
 ]
 
 const DISCIPLINES = [
-  { num: 'I',   label: 'GIMNASIO',      sub: 'CrossFit · Funcional',     count: '420' },
-  { num: 'II',  label: 'DOJO',          sub: 'BJJ · Muay Thai · Karate', count: '610' },
-  { num: 'III', label: 'CONSERVATORIO', sub: 'Música · 1-a-1',           count: '180' },
-  { num: 'IV',  label: 'CLUB',          sub: 'Tenis · Pádel · Natación', count: '210' },
+  { num: 'I',   label: 'GIMNASIO',      sub: 'CrossFit · Funcional',     count: '420', img: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&q=80&fit=crop', imgAlt: 'Gimnasio CrossFit' },
+  { num: 'II',  label: 'DOJO',          sub: 'BJJ · Muay Thai · Karate', count: '610', img: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=700&q=80&fit=crop', imgAlt: 'Dojo artes marciales' },
+  { num: 'III', label: 'CONSERVATORIO', sub: 'Música · 1-a-1',           count: '180', img: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=700&q=80&fit=crop', imgAlt: 'Conservatorio de música' },
+  { num: 'IV',  label: 'CLUB',          sub: 'Tenis · Pádel · Natación', count: '210', img: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=700&q=80&fit=crop', imgAlt: 'Club deportivo' },
 ]
 
 const PRICES = {
@@ -185,10 +188,11 @@ const PRICES = {
 
 // ─── COMPONENTS ──────────────────────────────────────────────────────────────
 
-function ImgPh({ label, style, className }: { label: string; style?: React.CSSProperties; className?: string }) {
+function Img({ src, alt, style, className, overlay }: { src: string; alt: string; style?: React.CSSProperties; className?: string; overlay?: string }) {
   return (
-    <div className={`img-ph${className ? ' ' + className : ''}`} style={style}>
-      <span className="img-ph-label">{label}</span>
+    <div className={className} style={{ position: 'relative', overflow: 'hidden', ...style }}>
+      <img src={src} alt={alt} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+      {overlay && <div style={{ position: 'absolute', inset: 0, background: overlay }} />}
     </div>
   )
 }
@@ -287,7 +291,7 @@ function Hero() {
             </div>
           </div>
 
-          <ImgPh className="hero-img" label="FOTO HERO · ATLETA EN ACCIÓN · b/n + warm tint" style={{ aspectRatio: '4/5', minHeight: 480, width: '100%' }} />
+          <Img className="hero-img" src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=900&q=80&fit=crop" alt="Atleta entrenando" overlay="linear-gradient(to bottom right, rgba(14,15,18,0.3), rgba(255,92,31,0.08))" style={{ aspectRatio: '4/5', minHeight: 480, width: '100%' }} />
         </div>
       </div>
     </section>
@@ -312,11 +316,11 @@ function Ticker() {
 
 function QuienUsa() {
   const fotos = [
-    { label: 'FOTO · JIU-JITSU VISTA CENITAL' },
-    { label: 'FOTO · CHECK-IN QR' },
-    { label: 'FOTO · PIANO · CONSERVATORIO' },
-    { label: 'FOTO · FUNCIONAL / KETTLEBELL' },
-    { label: 'FOTO · TATAMI · PANORÁMICA', wide: true },
+    { src: 'https://images.unsplash.com/photo-1604480132736-44c188fe4d20?w=600&q=80&fit=crop', alt: 'Jiu-jitsu entrenamiento' },
+    { src: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?w=600&q=80&fit=crop', alt: 'Escaneo QR check-in' },
+    { src: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80&fit=crop', alt: 'Piano conservatorio' },
+    { src: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600&q=80&fit=crop', alt: 'Entrenamiento funcional kettlebell' },
+    { src: 'https://images.unsplash.com/photo-1547153760-18fc86324498?w=1200&q=80&fit=crop', alt: 'Tatami panorámica', wide: true },
   ]
   return (
     <section id="quien-usa" className="section">
@@ -335,7 +339,7 @@ function QuienUsa() {
 
         <div className="gallery-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '160px', gap: 6 }}>
           {fotos.map((f, i) => (
-            <ImgPh key={i} className={f.wide ? 'gallery-wide' : ''} label={f.label} style={{ height: '100%', width: '100%', aspectRatio: 'auto' }} />
+            <Img key={i} src={f.src} alt={f.alt} className={f.wide ? 'gallery-wide' : ''} style={{ height: '100%', width: '100%' }} />
           ))}
         </div>
       </div>
@@ -407,7 +411,7 @@ function Plataforma() {
           </div>
 
           <div>
-            <ImgPh label={p.img} style={{ width: '100%', aspectRatio: '16/9', marginBottom: 28 }} />
+            <Img src={p.img} alt={p.imgAlt} style={{ width: '100%', aspectRatio: '16/9', marginBottom: 28 }} />
             <h3 className="t-archivo" style={{ fontSize: 'clamp(32px, 4vw, 52px)', color: 'var(--cream)', marginBottom: 14 }}>{p.title}</h3>
             <p style={{ color: 'var(--ink-dim)', fontSize: 15, lineHeight: 1.65, marginBottom: 24 }}>{p.body}</p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
@@ -436,7 +440,7 @@ function Disciplinas() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 1, background: 'var(--line)', border: '1px solid var(--line)' }}>
           {DISCIPLINES.map(d => (
             <div key={d.num} style={{ background: 'var(--bg)' }}>
-              <ImgPh label={`FOTO · ${d.label}`} style={{ width: '100%', aspectRatio: '4/3' }} />
+              <Img src={d.img} alt={d.imgAlt} style={{ width: '100%', aspectRatio: '4/3' }} />
               <div style={{ padding: '20px 24px 28px' }}>
                 <div className="t-mono" style={{ marginBottom: 8 }}>{d.num} / IV</div>
                 <div style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 24, textTransform: 'uppercase', marginBottom: 4, color: 'var(--cream)' }}>{d.label}</div>
@@ -459,7 +463,7 @@ function Testimonio() {
     <section id="historias" className="section">
       <div className="shell">
         <div className="testimonio-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 80, alignItems: 'center' }}>
-          <ImgPh className="testimonio-img" label="RETRATO · MAURO ROCA · B/N" style={{ aspectRatio: '3/4', width: '100%' }} />
+          <Img className="testimonio-img" src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=700&q=80&fit=crop" alt="Instructor de BJJ" overlay="linear-gradient(to top, rgba(14,15,18,0.4), transparent 50%)" style={{ aspectRatio: '3/4', width: '100%' }} />
           <div>
             <div className="eyebrow" style={{ marginBottom: 32 }}>05 · Testimonio · Academia Roca BJJ</div>
             <blockquote style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontStyle: 'italic', fontSize: 'clamp(22px, 3vw, 48px)', lineHeight: 1.0, color: 'var(--cream)', marginBottom: 36 }}>
@@ -554,7 +558,7 @@ function CTA() {
           Construí<br />fuerza.<br />
           <span style={{ color: 'var(--ink-dim)', fontStyle: 'italic' }}>olvidá la planilla.</span>
         </h2>
-        <ImgPh label="FOTO · CLOSE-UP · PUÑOS ENVUELTOS / CINTURÓN" style={{ width: '100%', maxWidth: 640, height: 260, margin: '0 auto 48px' }} />
+        <Img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200&q=80&fit=crop" alt="Puños envueltos listos para entrenar" overlay="linear-gradient(to top, rgba(14,15,18,0.5), transparent 60%)" style={{ width: '100%', maxWidth: 640, height: 260, margin: '0 auto 48px' }} />
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
           <a href="/login" className="btn-primary">Empezar prueba →</a>
           <a href="#precios" className="btn-ghost">Hablar con un humano</a>
