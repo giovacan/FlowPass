@@ -173,16 +173,18 @@ const DISCIPLINES = [
   { num: 'IV',  label: 'CLUB',          sub: 'Tenis · Pádel · Natación', count: '210', img: 'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?w=700&q=80&fit=crop', imgAlt: 'Club deportivo' },
 ]
 
+const REGISTER_URL = 'https://flowstudioya.web.app/register'
+
 const PRICES = {
   mensual: [
-    { id: 'start',      nombre: 'START',      precio: '$29', socios: 'Hasta 30 socios',          features: ['Cobranza básica','Check-in QR','App de socios','Soporte email'],                                        popular: false, cta: 'Empezar' },
-    { id: 'pro',        nombre: 'PRO',        precio: '$79', socios: 'Hasta 500 socios',         features: ['Todo de Start','Multi-sucursal (3)','Reportes avanzados','White-label app','Soporte 24h'],              popular: true,  cta: 'Probar 30 días' },
-    { id: 'federation', nombre: 'FEDERATION', precio: null,  socios: '500+ socios o multi-sede', features: ['Todo de Pro','Multi-sucursal ∞','API + webhooks','SSO / SAML','CSM dedicado'],                          popular: false, cta: 'Hablar' },
+    { id: 'start',      nombre: 'START',      precio: '$29', socios: 'Hasta 30 socios',          features: ['Cobranza básica','Check-in QR','App de socios','Soporte email'],                                        popular: false, cta: 'Registrar negocio', href: REGISTER_URL },
+    { id: 'pro',        nombre: 'PRO',        precio: '$79', socios: 'Hasta 500 socios',         features: ['Todo de Start','Multi-sucursal (3)','Reportes avanzados','White-label app','Soporte 24h'],              popular: true,  cta: 'Registrar negocio', href: REGISTER_URL },
+    { id: 'federation', nombre: 'FEDERATION', precio: null,  socios: '500+ socios o multi-sede', features: ['Todo de Pro','Multi-sucursal ∞','API + webhooks','SSO / SAML','CSM dedicado'],                          popular: false, cta: 'Hablar con nosotros', href: 'mailto:hola@flowstudio.app' },
   ],
   anual: [
-    { id: 'start',      nombre: 'START',      precio: '$23', socios: 'Hasta 30 socios',          features: ['Cobranza básica','Check-in QR','App de socios','Soporte email'],                                        popular: false, cta: 'Empezar' },
-    { id: 'pro',        nombre: 'PRO',        precio: '$63', socios: 'Hasta 500 socios',         features: ['Todo de Start','Multi-sucursal (3)','Reportes avanzados','White-label app','Soporte 24h'],              popular: true,  cta: 'Probar 30 días' },
-    { id: 'federation', nombre: 'FEDERATION', precio: null,  socios: '500+ socios o multi-sede', features: ['Todo de Pro','Multi-sucursal ∞','API + webhooks','SSO / SAML','CSM dedicado'],                          popular: false, cta: 'Hablar' },
+    { id: 'start',      nombre: 'START',      precio: '$23', socios: 'Hasta 30 socios',          features: ['Cobranza básica','Check-in QR','App de socios','Soporte email'],                                        popular: false, cta: 'Registrar negocio', href: REGISTER_URL },
+    { id: 'pro',        nombre: 'PRO',        precio: '$63', socios: 'Hasta 500 socios',         features: ['Todo de Start','Multi-sucursal (3)','Reportes avanzados','White-label app','Soporte 24h'],              popular: true,  cta: 'Registrar negocio', href: REGISTER_URL },
+    { id: 'federation', nombre: 'FEDERATION', precio: null,  socios: '500+ socios o multi-sede', features: ['Todo de Pro','Multi-sucursal ∞','API + webhooks','SSO / SAML','CSM dedicado'],                          popular: false, cta: 'Hablar con nosotros', href: 'mailto:hola@flowstudio.app' },
   ],
 }
 
@@ -219,9 +221,14 @@ function Nav() {
             ))}
           </div>
 
-          <a href="/login" className="btn-primary" style={{ padding: '10px 20px', fontSize: 13, flexShrink: 0 }}>
-            Empezar →
-          </a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexShrink: 0 }}>
+            <a href="https://flowstudioya.web.app/register" className="btn-primary" style={{ padding: '10px 20px', fontSize: 13 }}>
+              Registrar negocio →
+            </a>
+            <a href="/login" className="btn-ghost" style={{ padding: '10px 20px', fontSize: 13 }}>
+              Acceder
+            </a>
+          </div>
         </div>
       </div>
     </nav>
@@ -269,13 +276,13 @@ function Hero() {
             </h1>
 
             <p style={{ color: 'var(--ink-dim)', fontSize: 17, lineHeight: 1.6, maxWidth: 480, margin: '28px 0 36px' }}>
-              Plataforma de membresías para gimnasios, dojos, conservatorios y clubs.{' '}
-              <span style={{ color: 'var(--ink)' }}>Cobranza, asistencia y agenda en una sola disciplina.</span>
+              Plataforma de membresías para cualquier negocio que cobra recurrente.{' '}
+              <span style={{ color: 'var(--ink)' }}>Cobranza, asistencia y agenda — todo en un solo lugar.</span>
             </p>
 
             <div className="hero-btns" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 44 }}>
-              <a href="/login" className="btn-primary">Empezar prueba →</a>
-              <a href="#producto" className="btn-ghost">Ver demo en vivo</a>
+              <a href="https://flowstudioya.web.app/register" className="btn-primary">Registrar mi negocio →</a>
+              <a href="/login" className="btn-ghost">Ya tengo cuenta</a>
             </div>
 
             <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', paddingTop: 24, borderTop: '1px solid var(--line)' }}>
@@ -537,7 +544,7 @@ function Precios() {
                   </li>
                 ))}
               </ul>
-              <a href="/login" className={p.popular ? 'btn-primary' : 'btn-ghost'} style={{ justifyContent: 'space-between', width: '100%' }}>
+              <a href={p.href} className={p.popular ? 'btn-primary' : 'btn-ghost'} style={{ justifyContent: 'space-between', width: '100%' }}>
                 {p.cta} <span>→</span>
               </a>
             </div>
@@ -560,8 +567,8 @@ function CTA() {
         </h2>
         <Img src="https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?w=1200&q=80&fit=crop" alt="Puños envueltos listos para entrenar" overlay="linear-gradient(to top, rgba(14,15,18,0.5), transparent 60%)" style={{ width: '100%', maxWidth: 640, height: 260, margin: '0 auto 48px' }} />
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
-          <a href="/login" className="btn-primary">Empezar prueba →</a>
-          <a href="#precios" className="btn-ghost">Hablar con un humano</a>
+          <a href="https://flowstudioya.web.app/register" className="btn-primary">Registrar mi negocio →</a>
+          <a href="mailto:hola@flowstudio.app" className="btn-ghost">Hablar con un humano</a>
         </div>
         <div className="t-mono" style={{ textAlign: 'center' }}>30 DÍAS · SIN TARJETA · MIGRACIÓN ASISTIDA</div>
       </div>
