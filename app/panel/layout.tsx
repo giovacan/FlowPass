@@ -11,6 +11,7 @@ const NAV = [
   { href: '/panel/alumnos',    label: 'Alumnos',    icon: '◈' },
   { href: '/panel/pagos',      label: 'Pagos',      icon: '◇' },
   { href: '/panel/asistencia', label: 'Asistencia', icon: '◉' },
+  { href: '/panel/temas',      label: 'Temas',      icon: '◐' },
   { href: '/panel/ajustes',    label: 'Ajustes',    icon: '◎' },
 ]
 
@@ -19,7 +20,7 @@ const css = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(255,92,31,0.25); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--fp-accent) 25%, transparent); border-radius: 2px; }
 
   .fp-nav-link {
     display: flex; align-items: center; gap: 11px; padding: 10px 16px;
@@ -28,8 +29,8 @@ const css = `
     transition: all .15s; border: 1px solid transparent;
   }
   .fp-nav-link:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.05); }
-  .fp-nav-link.active { color: #fff; background: rgba(255,92,31,0.1); border-color: rgba(255,92,31,0.18); }
-  .fp-nav-link.active .fp-nav-icon { color: #FF5C1F; }
+  .fp-nav-link.active { color: #fff; background: var(--fp-accent-dim); border-color: color-mix(in srgb, var(--fp-accent) 18%, transparent); }
+  .fp-nav-link.active .fp-nav-icon { color: var(--fp-accent); }
   .fp-nav-icon { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; transition: color .15s; }
 
   /* ── Cards ── */
@@ -44,8 +45,8 @@ const css = `
     padding: 9px 18px; border-radius: 9px; font-weight: 600; font-size: 13.5px;
     cursor: pointer; transition: all .15s; white-space: nowrap; font-family: inherit; border: none;
   }
-  .fp-btn-primary { background: #FF5C1F; color: #fff; }
-  .fp-btn-primary:hover { background: #E04510; transform: translateY(-1px); }
+  .fp-btn-primary { background: var(--fp-accent); color: #fff; }
+  .fp-btn-primary:hover { filter: brightness(0.88); transform: translateY(-1px); }
   .fp-btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
   .fp-btn-ghost { background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.75); border: 1px solid rgba(255,255,255,0.1); }
   .fp-btn-ghost:hover { background: rgba(255,255,255,0.12); color: #fff; }
@@ -58,7 +59,7 @@ const css = `
     border-radius: 9px; color: #fff; padding: 10px 13px; font-size: 14px;
     font-family: inherit; outline: none; transition: border-color .15s;
   }
-  .fp-input:focus { border-color: rgba(255,92,31,0.45); background: rgba(255,255,255,0.07); }
+  .fp-input:focus { border-color: color-mix(in srgb, var(--fp-accent) 45%, transparent); background: rgba(255,255,255,0.07); }
   .fp-input::placeholder { color: rgba(255,255,255,0.2); }
   .fp-label {
     display: block; font-size: 10.5px; font-weight: 600; letter-spacing: 0.08em;
@@ -92,7 +93,7 @@ const css = `
     animation: fp-fade-in .15s ease;
   }
   .fp-modal {
-    background: #18181D; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
+    background: var(--fp-surface); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px;
     padding: 28px 32px; width: 100%; max-height: 90vh; overflow-y: auto;
     box-shadow: 0 32px 80px rgba(0,0,0,0.5);
   }
@@ -115,9 +116,9 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
     return (
       <>
         <style>{css}</style>
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0F0F13' }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--fp-bg, #0F0F13)', ...auth_.cssVars }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ width: 32, height: 32, border: '2.5px solid rgba(255,92,31,0.2)', borderTopColor: '#FF5C1F', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+            <div style={{ width: 32, height: 32, border: '2.5px solid var(--fp-accent-dim, rgba(255,92,31,0.2))', borderTopColor: 'var(--fp-accent, #FF5C1F)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
             <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase' }}>cargando</span>
           </div>
         </div>
@@ -134,7 +135,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <style>{css}</style>
-      <div style={{ display: 'flex', minHeight: '100vh', background: '#0F0F13', color: '#fff', fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--fp-bg)', color: '#fff', fontFamily: 'var(--fp-font-body)', ...auth_.cssVars }}>
 
         {/* ── Sidebar ── */}
         <aside style={{ width: 228, flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh', background: 'rgba(255,255,255,0.01)' }}>
@@ -142,8 +143,8 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
           {/* Marca */}
           <div style={{ padding: '18px 20px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 30, height: 30, background: '#FF5C1F', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                <span style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 17, color: '#fff', lineHeight: 1 }}>F</span>
+              <div style={{ width: 30, height: 30, background: 'var(--fp-accent)', borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ fontFamily: 'var(--fp-font-heading)', fontSize: 17, color: '#fff', lineHeight: 1 }}>F</span>
               </div>
               <div>
                 <div style={{ fontFamily: "'Bebas Neue',sans-serif", fontSize: 15, letterSpacing: '0.06em', color: '#fff', lineHeight: 1 }}>FlowPass</div>
@@ -154,7 +155,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
 
           {/* Negocio */}
           <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(255,255,255,0.07)', display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'linear-gradient(135deg, rgba(255,92,31,0.35), rgba(255,92,31,0.08))', border: '1px solid rgba(255,92,31,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: "'Bebas Neue',sans-serif", fontSize: 13, color: '#FF5C1F', letterSpacing: '0.04em' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, background: 'var(--fp-hero-bg)', border: '1px solid color-mix(in srgb, var(--fp-accent) 25%, transparent)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontFamily: 'var(--fp-font-heading)', fontSize: 13, color: '#fff', letterSpacing: '0.04em' }}>
               {initials}
             </div>
             <div style={{ minWidth: 0 }}>
