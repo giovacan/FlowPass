@@ -73,7 +73,7 @@ export function useFlowPassAuth(): FlowPassAuthState {
         const paymentStatus: PaymentStatus = studioData.paymentStatus   ?? 'trial'
         const trialEndsAt: string | null   = studioData.trialEndsAt     ?? null
         const suspendido                   = cuentaSuspendida(paymentStatus, trialEndsAt)
-        const plantillaId                  = (negocio as any).plantilla || 'flowpass'
+        const plantillaId                  = (negocio as any).plantillaFlowpass || 'flowpass'
 
         if ((negocio as any).onboardingCompletado === false) {
           setState(s => ({ ...s, redirectTo: '/onboarding' }))
