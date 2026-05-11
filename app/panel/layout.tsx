@@ -17,6 +17,17 @@ const NAV = [
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --fp-accent:       #FF5C1F;
+    --fp-accent-dim:   rgba(255,92,31,0.12);
+    --fp-bg:           #0F0F13;
+    --fp-surface:      #18181D;
+    --fp-hero-bg:      linear-gradient(135deg, #FF5C1F 0%, #E04510 100%);
+    --fp-font-heading: 'Bebas Neue', sans-serif;
+    --fp-font-body:    'Inter', system-ui, sans-serif;
+  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
