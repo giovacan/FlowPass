@@ -112,11 +112,16 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
     if (auth_.redirectTo) router.replace(auth_.redirectTo)
   }, [auth_.redirectTo, router])
 
+  const themeStyle = Object.entries(auth_.cssVars)
+    .map(([k, v]) => `${k}:${v}`)
+    .join(';')
+  const themeCss = `:root{${themeStyle}}`
+
   if (!auth_.ready) {
     return (
       <>
         <style>{css}</style>
-        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--fp-bg, #0F0F13)', ...(auth_.cssVars as React.CSSProperties) }}>
+        <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--fp-bg, #0F0F13)' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
             <div style={{ width: 32, height: 32, border: '2.5px solid var(--fp-accent-dim, rgba(255,92,31,0.2))', borderTopColor: 'var(--fp-accent, #FF5C1F)', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
             <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 9, letterSpacing: '0.2em', color: 'rgba(255,255,255,0.2)', textTransform: 'uppercase' }}>cargando</span>
@@ -135,7 +140,8 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <style>{css}</style>
-      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--fp-bg)', color: '#fff', fontFamily: 'var(--fp-font-body)', ...(auth_.cssVars as React.CSSProperties) }}>
+      <style>{themeCss}</style>
+      <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--fp-bg)', color: '#fff', fontFamily: 'var(--fp-font-body)' }}>
 
         {/* ── Sidebar ── */}
         <aside style={{ width: 228, flexShrink: 0, borderRight: '1px solid rgba(255,255,255,0.07)', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh', background: 'rgba(255,255,255,0.01)' }}>
