@@ -5,6 +5,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '@/lib/firebase'
 import { resolveTenant, getNegocio } from '@/lib/firestore'
 import { type PlanId, type FeatureOverrides, type PaymentStatus, cuentaSuspendida } from '@/lib/plans'
+import { getFpTokens, fpTokensToCSSVars } from '@/lib/plantillas'
 
 export interface FlowPassAuthState {
   tenantId:      string
@@ -22,6 +23,8 @@ export interface FlowPassAuthState {
   suspendido:    boolean
   ready:         boolean
   redirectTo:    string
+  plantillaId:   string
+  cssVars:       Record<string, string>
 }
 
 const INITIAL: FlowPassAuthState = {
@@ -29,7 +32,7 @@ const INITIAL: FlowPassAuthState = {
   subcategoria: '', userName: '', plan: 'negocio',
   extraUsuarios: 0, extraSedes: 0, overrides: {},
   paymentStatus: 'trial', trialEndsAt: null, suspendido: false,
-  ready: false, redirectTo: '',
+  ready: false, redirectTo: '', plantillaId: 'flowpass', cssVars: {},
 }
 
 export function useFlowPassAuth(): FlowPassAuthState {
@@ -59,7 +62,7 @@ export function useFlowPassAuth(): FlowPassAuthState {
 
         const [studioSnap, negocio] = await Promise.all([
           getDoc(doc(db, 'studios', tenantId)).catch(() => null),
-          getNegocio(tenantId).catch(() => ({ nombre: '', abierto: true, subcategoria: '' })),
+          getNegocio(tenantId).catch(() => ({ nombre: '', abierto: true, subcategoria: '', plantilla: 'flowpass' })),
         ])
 
         const studioData                   = studioSnap?.data() || {}
@@ -70,11 +73,15 @@ export function useFlowPassAuth(): FlowPassAuthState {
         const paymentStatus: PaymentStatus = studioData.paymentStatus   ?? 'trial'
         const trialEndsAt: string | null   = studioData.trialEndsAt     ?? null
         const suspendido                   = cuentaSuspendida(paymentStatus, trialEndsAt)
+        const plantillaId                  = (negocio as any).plantilla || 'flowpass'
 
         if ((negocio as any).onboardingCompletado === false) {
           setState(s => ({ ...s, redirectTo: '/onboarding' }))
           return
         }
+
+        const fpTokens  = await getFpTokens(plantillaId)
+        const cssVars   = fpTokensToCSSVars(fpTokens)
 
         setState({
           tenantId,
@@ -92,6 +99,8 @@ export function useFlowPassAuth(): FlowPassAuthState {
           suspendido,
           ready:         true,
           redirectTo:    suspendido ? '/suspendido' : '',
+          plantillaId,
+          cssVars,
         })
       } catch {
         const cached = localStorage.getItem('fp_tenant')
@@ -112,6 +121,8 @@ export function useFlowPassAuth(): FlowPassAuthState {
             suspendido:    false,
             ready:         true,
             redirectTo:    '',
+            plantillaId:   'flowpass',
+            cssVars:       {},
           })
         } else {
           setState(s => ({ ...s, redirectTo: '/login' }))
