@@ -192,6 +192,17 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
             ))}
           </nav>
 
+          {/* Ver página pública */}
+          <div style={{ padding: '8px 10px' }}>
+            <a href="/demo-guerreros" target="_blank" rel="noopener noreferrer"
+              className="fp-nav-link"
+              style={{ color: 'var(--fp-accent)', border: '1px solid color-mix(in srgb, var(--fp-accent) 22%, transparent)', background: 'color-mix(in srgb, var(--fp-accent) 8%, transparent)' }}
+            >
+              <span className="fp-nav-icon">◎</span>
+              Ver página pública
+            </a>
+          </div>
+
           {/* Salir */}
           <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,0.07)' }}>
             <button onClick={() => signOut(auth).then(() => router.replace('/login'))}
