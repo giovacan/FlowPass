@@ -4,17 +4,18 @@
     "public": "out",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**"],
     "rewrites": [
-      { "source": "/demo-guerreros",         "destination": "/demo-guerreros.html" },
-      { "source": "/demo-sonidos-adoracion", "destination": "/demo-sonidos-adoracion.html" },
-      { "source": "/panel/alumnos",    "destination": "/panel/alumnos.html" },
-      { "source": "/panel/pagos",      "destination": "/panel/pagos.html" },
-      { "source": "/panel/asistencia", "destination": "/panel/asistencia.html" },
-      { "source": "/panel/ajustes",    "destination": "/panel/ajustes.html" },
-      { "source": "/panel/funciones",  "destination": "/panel/funciones.html" },
-      { "source": "/panel",            "destination": "/panel.html" },
-      { "source": "/onboarding",       "destination": "/onboarding.html" },
-      { "source": "/login",            "destination": "/login.html" },
-      { "source": "/",                 "destination": "/index.html" }
+      { "source": "/panel/alumnos",    "destination": "/panel/alumnos/index.html" },
+      { "source": "/panel/pagos",      "destination": "/panel/pagos/index.html" },
+      { "source": "/panel/asistencia", "destination": "/panel/asistencia/index.html" },
+      { "source": "/panel/ajustes",    "destination": "/panel/ajustes/index.html" },
+      { "source": "/panel/temas",      "destination": "/panel/temas/index.html" },
+      { "source": "/panel/funciones",  "destination": "/panel/funciones/index.html" },
+      { "source": "/panel",            "destination": "/panel/index.html" },
+      { "source": "/onboarding",       "destination": "/onboarding/index.html" },
+      { "source": "/login",            "destination": "/login/index.html" },
+      { "source": "/suspendido",       "destination": "/suspendido/index.html" },
+      { "source": "/",                 "destination": "/index.html" },
+      { "source": "/**",               "destination": "/_/index.html" }
     ],
     "headers": [
       {
