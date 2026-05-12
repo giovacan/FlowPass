@@ -194,7 +194,7 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
 
           {/* Ver página pública */}
           <div style={{ padding: '8px 10px' }}>
-            <a href="/demo-guerreros" target="_blank" rel="noopener noreferrer"
+            <a href={`/${auth_.tenantId}`} target="_blank" rel="noopener noreferrer"
               className="fp-nav-link"
               style={{ color: 'var(--fp-accent)', border: '1px solid color-mix(in srgb, var(--fp-accent) 22%, transparent)', background: 'color-mix(in srgb, var(--fp-accent) 8%, transparent)' }}
             >
