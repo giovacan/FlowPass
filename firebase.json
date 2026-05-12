@@ -4,6 +4,8 @@
     "public": "out",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "functions/**"],
     "rewrites": [
+      { "source": "/demo-guerreros",         "destination": "/demo-guerreros.html" },
+      { "source": "/demo-sonidos-adoracion", "destination": "/demo-sonidos-adoracion.html" },
       { "source": "/panel/alumnos",    "destination": "/panel/alumnos.html" },
       { "source": "/panel/pagos",      "destination": "/panel/pagos.html" },
       { "source": "/panel/asistencia", "destination": "/panel/asistencia.html" },
